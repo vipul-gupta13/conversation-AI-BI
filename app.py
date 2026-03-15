@@ -5,7 +5,7 @@ from openai import OpenAI
 import os
 import time
 import json
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # load_dotenv()
 
