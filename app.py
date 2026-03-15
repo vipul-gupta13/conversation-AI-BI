@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🦙 Superstore BI – Llama vs GPT-OSS (Groq)")
+st.title("Superstore BI – Llama vs GPT-OSS (Groq)")
 st.caption("Same data • Same prompt • Two different LLMs → Instant side-by-side BI dashboards")
 
 # ====================== DATA ======================
