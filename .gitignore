@@ -3,6 +3,10 @@
 .streamlit/secrets.toml
 secrets.toml
 
+#env login
+.envrc
+.direnv
+
 # Python
 __pycache__/
 *.pyc
