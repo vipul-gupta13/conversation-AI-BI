@@ -5,9 +5,6 @@ from openai import OpenAI
 import os
 import time
 import json
-# from dotenv import load_dotenv
-
-# load_dotenv()
 
 st.set_page_config(
     page_title="Superstore BI LLM Showdown",
@@ -89,8 +86,34 @@ if not groq_key:
 
 client = OpenAI(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
 
-MODEL1 = "llama-3.3-70b-versatile"
-MODEL2 = "openai/gpt-oss-20b"
+# ────────────────────────────────────────────────
+#   Model configuration — change these two blocks only when you want to try different models
+# ────────────────────────────────────────────────
+
+MODEL_CONFIG = {
+        "primary": {
+        "id": "llama-3.3-70b-versatile",
+        "display_name": "Llama 3.3 70B",
+        "emoji": "🦙",
+        "short_label": "Llama 3.3"
+    },
+    "secondary": {
+        "id": "openai/gpt-oss-20b",
+        "display_name": "GPT-OSS 20B",
+        "emoji": "⚡",
+        "short_label": "GPT-OSS"
+    }
+}
+
+# Derived / computed values — do NOT edit these directly
+MODEL1_ID = MODEL_CONFIG["primary"]["id"]
+MODEL2_ID = MODEL_CONFIG["secondary"]["id"]
+
+MODEL1_FULL_LABEL  = f"{MODEL_CONFIG['primary']['emoji']} {MODEL_CONFIG['primary']['display_name']}"
+MODEL2_FULL_LABEL  = f"{MODEL_CONFIG['secondary']['emoji']} {MODEL_CONFIG['secondary']['display_name']}"
+
+MODEL1_SHORT_LABEL = MODEL_CONFIG["primary"]["short_label"]
+MODEL2_SHORT_LABEL = MODEL_CONFIG["secondary"]["short_label"]
 
 # ====================== RENDER CHART HELPER ======================
 def render_chart(df, chart):
@@ -141,8 +164,8 @@ def render_chart(df, chart):
 # ====================== UI ======================
 st.sidebar.header("Configuration")
 st.sidebar.info(f"""
-**LLM 1**: {MODEL1} (Llama)  
-**LLM 2**: {MODEL2} (Mixtral OSS)  
+**LLM 1**: {MODEL1_FULL_LABEL} \n
+**LLM 2**: {MODEL2_FULL_LABEL} \n
 **Data**: Superstore Sales ({len(df):,} rows)
 """)
 
@@ -162,7 +185,7 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
         
         # Parallel calls
         response1 = client.chat.completions.create(
-            model=MODEL1,
+            model=MODEL1_ID,
             messages=[{"role": "system", "content": SYSTEM_PROMPT},
                       {"role": "user", "content": full_prompt}],
             response_format=JSON_SCHEMA,
@@ -171,7 +194,7 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
         )
         
         response2 = client.chat.completions.create(
-            model=MODEL2,
+            model=MODEL2_ID,
             messages=[{"role": "system", "content": SYSTEM_PROMPT},
                       {"role": "user", "content": full_prompt}],
             response_format=JSON_SCHEMA,
@@ -193,7 +216,7 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.subheader(f"🦙 {MODEL1}")
+        st.subheader(f"🦙 {MODEL1_SHORT_LABEL}")
         st.write(f"**Key Insight**: {data1.get('key_insight', '')}")
         
         kpi_row = st.columns(len(data1.get("kpi_cards", [])) or 1)
@@ -215,7 +238,7 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
                 )
     
     with col2:
-        st.subheader(f"🔀 {MODEL2}")
+        st.subheader(f"🔀 {MODEL2_SHORT_LABEL}")
         st.write(f"**Key Insight**: {data2.get('key_insight', '')}")
         
         kpi_row = st.columns(len(data2.get("kpi_cards", [])) or 1)
@@ -223,10 +246,6 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
             with kpi_row[i]:
                 st.metric(kpi["title"], kpi["value"], kpi.get("delta"))
         
-        # for chart in data2.get("charts", []):
-        #     fig = render_chart(df, chart)
-        #     if fig:
-        #         st.plotly_chart(fig, use_container_width=True)
         for i, chart in enumerate(data2.get("charts", [])):
             fig = render_chart(df, chart)
             if fig:
@@ -240,7 +259,7 @@ if st.button("🚀 Generate Dashboards with Both LLMs", type="primary"):
     st.divider()
     st.subheader("📊 Comparison")
     st.write(f"**Total latency**: {latency}s")
-    st.write(f"Llama charts: {len(data1.get('charts', []))} | Mixtral charts: {len(data2.get('charts', []))}")
+    st.write(f"{MODEL1_SHORT_LABEL} charts: {len(data1.get('charts', []))} | {MODEL2_SHORT_LABEL} charts: {len(data2.get('charts', []))}")
     st.caption("Both LLMs received **identical** data, metadata, and instructions.")
 
-st.caption("Built as a clean POC – same context, same JSON schema, different LLMs only.")
+st.caption("Conversational AI-BI POC – same context, same JSON schema, different LLMs only.")
