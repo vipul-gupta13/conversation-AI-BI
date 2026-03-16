@@ -6,8 +6,7 @@ See how different models reason and visualize in real time.
 ![Demo](demo.png)
 
 ### Live Demo
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)  
-*(Replace with your actual link after deployment)*
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://conversational-bi-demo.streamlit.app)
 
 ### Features
 - Two LLMs running in parallel (`llama-3.3-70b-versatile` vs `openai/gpt-oss-20b`)
@@ -24,10 +23,11 @@ See how different models reason and visualize in real time.
 
 ### Run Locally
 ```bash
-git clone https://github.com/yourusername/superstore-bi-llm-showdown.git
-cd superstore-bi-llm-showdown
+git clone https://github.com/vipul-gupta13/conversation-AI-BI.git
+cd conversation-AI_BI
 pip install -r requirements.txt
 cp .env.example .env
-# Add your GROQ_API_KEY
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+# Add your GROQ_API_KEY in both ".env" and ".streamlit/secrets.toml"
 streamlit run app.py
 
