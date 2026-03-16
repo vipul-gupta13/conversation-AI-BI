@@ -19,8 +19,10 @@ st.caption("Same data • Same prompt • Two different LLMs → Instant side-by
 # ====================== DATA ======================
 @st.cache_data
 def load_data():
-    url = "https://gist.githubusercontent.com/nnbphuong/38db511db14542f3ba9ef16e69d3814c/raw/Superstore.csv"
-    df = pd.read_csv(url)
+    # url = "https://gist.githubusercontent.com/nnbphuong/38db511db14542f3ba9ef16e69d3814c/raw/Superstore.csv"
+    # df = pd.read_csv(url)
+    csv_file = "superstore_data.csv"
+    df = pd.read_csv(csv_file)
     df['Order Date'] = pd.to_datetime(df['Order Date'])
     df['Ship Date'] = pd.to_datetime(df['Ship Date'])
     return df
